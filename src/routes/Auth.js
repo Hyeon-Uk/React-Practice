@@ -5,6 +5,7 @@ function Auth(){
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
     const [newAccount,setNewAccount]=useState(true);
+    const [error,setError]=useState("");
     const onChange= (e) =>{
         const {
             target:{name,value}
@@ -16,6 +17,9 @@ function Auth(){
         else if(name==="password"){
             setPassword(value);
         }
+    }
+    const toggleAccount=()=>{
+        setNewAccount((prev)=>!prev);
     }
 
     const onSubmit=async (e)=>{
@@ -29,7 +33,7 @@ function Auth(){
                 data=await authService.signInWithEmailAndPassword(email,password);
             }
         }catch(err){
-            console.log(err);
+            setError(err.message);
         }
     }
 
@@ -41,7 +45,9 @@ function Auth(){
                 <input type="submit" value={
                     newAccount ? "Create Account":"Log In"
                 }></input>
+            {error}
             </form>
+            <span onClick={toggleAccount}>{newAccount?"Sign In":"Create Account"}</span>
         <div>
             <button>Continue With Google</button>
             <button>Continue With Github</button>
