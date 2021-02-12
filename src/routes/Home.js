@@ -4,6 +4,7 @@ import { dbService } from "../fbase";
 function Home({userObj}) {
     const [nweet, setNweet] = useState("");
     const [nweets, setNweets] = useState([]);
+    const [attachment,setAttachment]=useState(null);
     useEffect(() => {
         dbService.collection('nwit').onSnapshot(snapshot=>{
             const nweetArray=snapshot.docs.map(doc=>({
@@ -32,17 +33,36 @@ function Home({userObj}) {
     const onFileChange=(event)=>{
         const {target:{files}}=event;
         const theFile=files[0];
+        if(theFile===undefined){
+            setAttachment(null);
+            return;
+        }
         const reader= new FileReader();
         reader.onloadend=(finishedEvent)=>{
-            console.log(finishedEvent);
+            const {
+                currentTarget:{
+                    result
+                }
+            }=finishedEvent;
+            setAttachment(result);
         }
         reader.readAsDataURL(theFile);
+    }
+    const onClearAttachment=()=>{
+        setAttachment(null);
+        console.log(attachment);
     }
     return (<div>
         <form onSubmit={onSubmit}>
             <input onChange={onChange} value={nweet} type="text" maxLength="120" placeholder="What's your mind?"></input>
             <input type="file" accept="image/*" onChange={onFileChange}/>
             <input type="submit" value="Nweet"></input>
+            {attachment
+            &&<div>
+                <img src={attachment} width="50px" height="50px"/>
+                <button onClick={onClearAttachment}>Clear</button>
+                </div>
+            }
         </form>
         <div>
             {nweets.map((nweet) => (
