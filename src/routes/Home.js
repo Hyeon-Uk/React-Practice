@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { dbService } from "../fbase";
-function Home() {
+function Home({userObj}) {
     const [nweet, setNweet] = useState("");
     const [nweets, setNweets] = useState([]);
-
-    //이부분 다시 공부
-    const getNweets = async () => {
-        const dbNweets = await dbService.collection("nwit").get();
-        dbNweets.forEach((document) => {
-            const nweetObject = {
-                ...document.data(),
-                id: document.id,
-            };
-            setNweets((prev) => [nweetObject, ...prev]);
-        });
-    };
-
     useEffect(() => {
-        getNweets();
+        dbService.collection('nwit').onSnapshot(snapshot=>{
+            const nweetArray=snapshot.docs.map(doc=>({
+                id:doc.id,
+                ...doc.data(),
+            }));
+            setNweets(nweetArray);
+        });
     }, []);
 
     const onSubmit = async (event) => {
         event.preventDefault();
         await dbService.collection("nwit").add({
-            nweet,
-            createAt: Date.now()
+            text:nweet,
+            createAt: Date.now(),
+            creatorId:userObj.uid,
         });
         setNweet("");
     }
@@ -41,7 +35,7 @@ function Home() {
         <div>
             {nweets.map((nweet) => (
                 <div key={nweet.id}>
-                    <h4>{nweet.nweet}</h4>
+                    <h4>{nweet.text}</h4>
                 </div>
             ))}
         </div>
