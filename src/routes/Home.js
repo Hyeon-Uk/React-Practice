@@ -5,7 +5,7 @@ import { dbService, storageService } from "../fbase";
 function Home({userObj}) {
     const [nweet, setNweet] = useState("");
     const [nweets, setNweets] = useState([]);
-    const [attachment,setAttachment]=useState(null);
+    const [attachment,setAttachment]=useState("");
     useEffect(() => {
         dbService.collection('nwit').onSnapshot(snapshot=>{
             const nweetArray=snapshot.docs.map(doc=>({
@@ -33,6 +33,7 @@ function Home({userObj}) {
         await dbService.collection("nwit").add(nweetObj);
         setNweet("");
         setAttachment("");
+        
     }
 
     const onChange = (event) => {

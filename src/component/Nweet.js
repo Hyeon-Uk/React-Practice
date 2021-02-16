@@ -32,15 +32,15 @@ const Nweet = ({ nweetObj, isOwner }) => {
     return (
         <div>
             {editing ?(
-                <>
+                <div className="box">
                     <form onSubmit={onSubmit}>
                         <input required onChange={onChange} type="text" value={newNweet} placeholder="Update your Nweet"/>
                         <input type="submit" value="Update Nweet!"/>
                     </form>
                     <button onClick={toggleEditing}>Cancel</button>
-                </>
+                </div>
             ):(
-                <div key={nweetObj.id}>
+                <div key={nweetObj.id} className="box">
                     <h4>{nweetObj.text}</h4>
                     {nweetObj.attachmentUrl&&<img src={nweetObj.attachmentUrl} width="50px" height="50px"/>}
                     {isOwner && <>
