@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { authService } from '../fbase';
-
 const AuthForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -39,15 +38,24 @@ const AuthForm = () => {
 
     return (
         <>
-            <form onSubmit={onSubmit}>
-                <input onChange={onChange} name="email" type="text" placeholder="Email" value={email} required></input>
-                <input onChange={onChange} name="password" type="password" placeholder="Password" value={password} required></input>
-                <input type="submit" value={
-                    newAccount ? "Create Account" : "Log In"
-                }></input>
-                {error}
+            <form onSubmit={onSubmit} className="container">
+                <input onChange={onChange} className="authInput"
+                    name="email" type="text"
+                    placeholder="Email"
+                    value={email} required />
+                <input onChange={onChange} className="authInput"
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    value={password} required/>
+                <input type="submit" className="authInput authSubmit"
+                    value={
+                        newAccount ? "Create Account" : "Log In"
+                    } />
+                {error && <span className="authError">{error}</span>}
             </form>
-            <span onClick={toggleAccount}>{newAccount ? "Sign In" : "Create Account"}</span>
+            <span onClick={toggleAccount} className="authSwitch">
+                {newAccount ? "Sign In" : "Create Account"}</span>
         </>
     );
 }

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { dbService, storageService } from '../fbase';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Nweet = ({ nweetObj, isOwner }) => {
     const [editing, setEditing] = useState(false);
@@ -13,9 +15,9 @@ const Nweet = ({ nweetObj, isOwner }) => {
         }
     }
 
-    const onChange=(event)=>{
+    const onChange = (event) => {
         event.preventDefault();
-        const {target:{value}}=event;
+        const { target: { value } } = event;
         setNewNweet(value);
     }
     const toggleEditing = () => setEditing((prev) => !prev);
@@ -23,32 +25,50 @@ const Nweet = ({ nweetObj, isOwner }) => {
     const onSubmit = async (event) => {
         event.preventDefault();
         dbService.doc(`nwit/${nweetObj.id}`).update({
-            text:newNweet
+            text: newNweet
         });
         setEditing(false);
     }
 
 
     return (
-        <div>
-            {editing ?(
-                <div className="box">
-                    <form onSubmit={onSubmit}>
-                        <input required onChange={onChange} type="text" value={newNweet} placeholder="Update your Nweet"/>
-                        <input type="submit" value="Update Nweet!"/>
+        <div className="nweet">
+            {editing ? (
+                <div className="container nweetEdit">
+                    <form onSubmit={onSubmit} className="container nweetEdit">
+                        <input
+                            className="formInput"
+                            required
+                            autoFocus
+                            onChange={onChange}
+                            type="text"
+                            value={newNweet}
+                            placeholder="Update your Nweet" />
+                        <input
+                            className="formBtn"
+                            type="submit"
+                            value="Update Nweet!" />
                     </form>
-                    <button onClick={toggleEditing}>Cancel</button>
+                    <button
+                        className="formBtn cancelBtn"
+                        onClick={toggleEditing}>
+                        Cancel
+                         </button>
                 </div>
-            ):(
-                <div key={nweetObj.id} className="box">
-                    <h4>{nweetObj.text}</h4>
-                    {nweetObj.attachmentUrl&&<img src={nweetObj.attachmentUrl} width="50px" height="50px"/>}
-                    {isOwner && <>
-                        <button onClick={onDeleteClick}>Delete Nweet</button>
-                        <button onClick={toggleEditing}>Update Nweet</button>
-                    </>}
-                </div>
-            )}
+            ) : (
+                    <>
+                        <h4>{nweetObj.text}</h4>
+                        {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl}/>}
+                        {isOwner && <div className="nweet__actions">
+                            <span onClick={onDeleteClick}>
+                                <FontAwesomeIcon icon={faTrash}/>
+                            </span>
+                            <span onClick={toggleEditing}>
+                                <FontAwesomeIcon icon={faPencilAlt}/>
+                            </span>
+                        </div>}
+                    </>
+                )}
         </div>
     );
 };
