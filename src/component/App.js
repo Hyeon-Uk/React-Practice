@@ -13,6 +13,9 @@ function App() {
           updateProfile:(arg)=>user.updateProfile(arg),
         });
       }
+      else{
+        setUserObj(null);
+      }
       setInit(true);
     });
   },[]);
@@ -23,7 +26,7 @@ function App() {
       displayName:user.displayName,
       uid:user.uid,
       updateProfile:(arg)=>user.updateProfile(arg),
-    })
+    });
   }
 
   return (
