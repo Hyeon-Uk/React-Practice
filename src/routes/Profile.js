@@ -1,19 +1,29 @@
 import React ,{useEffect,useState}from "react";
 import { useHistory } from "react-router-dom";
 import { authService, dbService } from "../fbase";
-function Profile({userObj}) {
+function Profile({refreshUser,userObj}) {
     const history = useHistory();
+    const [myNweets,setMyNweets]=useState([]);
     const [newDisplayName,setNewDisplayName]=useState(userObj.displayName);
     const onLogOutClick = () => {
         authService.signOut();
         history.push("/");
     };
 
+    useEffect(() => {
+        getMyNweets();
+      }, []);
+
     const getMyNweets=async ()=>{
         const nweets=await dbService.collection('nwit')
         .where("creatorId","==",userObj.uid)
         .get();
-        console.log(nweets.docs.map((doc)=>doc.data()));
+        const arr=(nweets.docs.map((doc)=>
+            doc.data(),
+        ));
+        console.log("arr",arr);
+        setMyNweets(arr);
+        console.log("mynweets",myNweets);
     };
 
     const onChange=(event)=>{
@@ -29,11 +39,9 @@ function Profile({userObj}) {
                 displayName:newDisplayName
             });
         }
+        refreshUser();
     }
 
-    useEffect(() => {
-        getMyNweets();
-      }, []);
     return (
         <>
         <form onSubmit={onSubmit}>

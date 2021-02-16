@@ -7,14 +7,28 @@ function App() {
   useEffect(()=>{
     authService.onAuthStateChanged((user)=>{
       if(user){
-        setUserObj(user);
+        setUserObj({
+          displayName:user.displayName,
+          uid:user.uid,
+          updateProfile:(arg)=>user.updateProfile(arg),
+        });
       }
       setInit(true);
     });
   },[]);
+
+  const refreshUser=()=>{
+    const user=authService.currentUser;
+    setUserObj({
+      displayName:user.displayName,
+      uid:user.uid,
+      updateProfile:(arg)=>user.updateProfile(arg),
+    })
+  }
+
   return (
   <>
-    {init?<AppRouter isLoggedIn={Boolean(userObj)} userObj={userObj}></AppRouter>:"initializing..."}
+    {init?<AppRouter isLoggedIn={Boolean(userObj)} userObj={userObj} refreshUser={refreshUser}></AppRouter>:"initializing..."}
     <footer>&copy;Nwitter {new Date().getFullYear()}</footer>
     </>
   );
